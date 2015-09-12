@@ -25,6 +25,7 @@
     <string name="Paid">Paid</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_detail">DetailActivity</string>
-    <string name="Edit">Edit</string>
+    <string name="Edit">EDIT</string>
+    <string name="Save">SAVE</string>
     <string name="Delete">Delete</string>
 </resources>

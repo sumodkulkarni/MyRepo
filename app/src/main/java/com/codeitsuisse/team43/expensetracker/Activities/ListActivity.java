@@ -38,6 +38,12 @@ public class ListActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        populateListView();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_list, menu);
@@ -63,14 +69,18 @@ public class ListActivity extends AppCompatActivity {
         ArrayList<HashMap<String, String>> expenseList =  db.getExpenseList();
         ListView incidentlistview = (ListView) findViewById(R.id.expense_listView);
         ListAdapter adapter = new SimpleAdapter(this, expenseList, R.layout.expense_list_item,
-                new String[] {"amount","currency","date"},
-                new int[] {R.id.item_amount, R.id.item_currency, R.id.item_date});
+                new String[] {"id","amount","currency","date"},
+                new int[] {R.id.item_id, R.id.item_amount, R.id.item_currency, R.id.item_date});
         incidentlistview.setAdapter(adapter);
         incidentlistview.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                        TextView item_id = (TextView) view.findViewById(R.id.item_id);
+                        String expenseId = item_id.getText().toString();
+                        Intent objIntent = new Intent(getApplicationContext(),DetailActivity.class);
+                        objIntent.putExtra("expense_id", Integer.parseInt(expenseId));
+                        startActivity(objIntent);
                     }
                 }
         );

@@ -123,8 +123,9 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public Expense getExpense(int _id){
         SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_EXPENSES + "WHERE " + KEY_ID + " =?";
+        String query = "SELECT * FROM " + TABLE_EXPENSES + " WHERE " + KEY_ID + " =?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(_id)});
+        cursor.moveToFirst();
 
         Expense expense = new Expense();
         expense.set_id(cursor.getInt(cursor.getColumnIndex(KEY_ID)));

@@ -141,7 +141,8 @@
         android:text="@string/Edit"
         android:id="@+id/button_edit_expense"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/linear_layout_principle" />
+        android:layout_alignEnd="@+id/linear_layout_principle"
+        android:onClick="buttonEditExpense" />
 
     <Button
         android:layout_width="wrap_content"
@@ -149,7 +150,8 @@
         android:id="@+id/button_delete_expense"
         android:text="@string/Delete"
         android:layout_alignBottom="@+id/button_edit_expense"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:onClick="buttonDeleteExpense" />
 
 
 </RelativeLayout>

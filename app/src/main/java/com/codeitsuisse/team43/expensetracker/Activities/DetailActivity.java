@@ -1,11 +1,14 @@
 package com.codeitsuisse.team43.expensetracker.Activities;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,47 +37,59 @@ public class DetailActivity extends AppCompatActivity {
     TextView detail_changeDate;
     Spinner detail_currency_spinner, detail_category_spinner;
     CheckedTextView detail_if_paid_view;
+    ArrayAdapter<String> category_adapter, currency_adapter;
 
     private int year;
     private int month;
     private int day;
     static final int DATE_PICKER_ID = 1111;
 
+    private static final String TAG = "DetailActivity";
+
 
     public void buttonEditExpense(View view){
         String text = String.valueOf(button_edit_expense.getText());
-
+        Log.i(TAG, text);
         switch (text){
             case "EDIT":
                 enableAllViews(true);
                 button_edit_expense.setText("SAVE");
-
                 break;
 
             case "SAVE":
                 enableAllViews(false);
-
-                Expense expense = new Expense();
-
-                Intent intent = getIntent();
-                int expense_id = intent.getIntExtra("expense_id", 0);
-
-                expense.set_id(expense_id);
-                expense.set(Double.valueOf(String.valueOf(inc_lat_view.getText())));
-                expense.setLongitude(Double.valueOf(String.valueOf(inc_long_view.getText())));
-                expense.setCategory(spinner_inc_details.getSelectedItem().toString());
-
-                expense.setImage(bitmap);
-                expense.setPin_code(IncidentDetails.this);
-                db.updateExpense(expense);
-                db.close();
+                updateExpense();
                 Toast.makeText(this, "UPDATED", Toast.LENGTH_LONG).show();
                 button_edit_expense.setText("EDIT");
-
                 break;
         }
     }
 
+
+    public void buttonDeleteExpense(View view){
+
+        new AlertDialog.Builder(this)
+                .setTitle("Delete")
+                .setMessage("Delete this entry?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                        Intent intent = getIntent();
+                        int expense_id = intent.getIntExtra("expense_id", 0);
+                        db.deleteExpense(expense_id);
+                        Toast.makeText(DetailActivity.this, "DELETED!", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
+    }
 
 
 
@@ -93,13 +108,13 @@ public class DetailActivity extends AppCompatActivity {
         detail_currency_spinner = (Spinner) findViewById(R.id.detail_currency_spinner);
         List<String> currencyList = new ArrayList<>();
         currencyList.add("INR"); currencyList.add("USD");
-        ArrayAdapter currency_adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, currencyList);
+        currency_adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, currencyList);
         detail_currency_spinner.setAdapter(currency_adapter);
 
         detail_category_spinner = (Spinner) findViewById(R.id.detail_category_spinner);
         List<String> categoryList = db.getCategoryList();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, categoryList);
-        detail_category_spinner.setAdapter(adapter);
+        category_adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, categoryList);
+        detail_category_spinner.setAdapter(category_adapter);
 
         detail_changeDate = (TextView) findViewById(R.id.detail_changeDate);
         // Get current date by calender
@@ -131,6 +146,7 @@ public class DetailActivity extends AppCompatActivity {
                     detail_if_paid_view.setChecked(true);
             }
         });
+        showExpenseDetails();
 
         enableAllViews(false);
     }
@@ -156,13 +172,13 @@ public class DetailActivity extends AppCompatActivity {
         public void onDateSet(DatePicker view, int selectedYear,
                               int selectedMonth, int selectedDay) {
 
-            year  = selectedYear;
+            year = selectedYear;
             month = selectedMonth;
-            day   = selectedDay;
+            day = selectedDay;
 
             // Show selected date
             detail_changeDate.setText(new StringBuilder().append(day)
-                    .append("/").append(month+1).append("/").append(year)
+                    .append("/").append(month + 1).append("/").append(year)
                     .append(" "));
 
         }
@@ -190,10 +206,36 @@ public class DetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void showExpenseDetails(){
+        Intent intent = getIntent();
+        int expense_id = intent.getIntExtra("expense_id", 0);
+
+        Expense expense = db.getExpense(expense_id);
+        detail_amount.setText(String.valueOf(expense.getAmount()));
+        detail_currency_spinner.setSelection(currency_adapter.getPosition(expense.getCurrency()));
+        detail_category_spinner.setSelection(category_adapter.getPosition(expense.getCurrency()));
+        detail_description.setText(expense.getDescription());
+        detail_changeDate.setText(expense.getDay() + "/" + expense.getMonth() + "/" + expense.getYear());
+        detail_if_paid_view.setChecked(expense.isIf_paid());
+    }
+
+    private void updateExpense(){
+        Expense expense = new Expense();
+        Intent i = getIntent();
+        expense.set_id(i.getIntExtra("expense_id",50000));
+        expense.setAmount(Double.parseDouble(detail_amount.getText().toString()));
+        expense.setCategory(detail_category_spinner.getSelectedItem().toString());
+        expense.setCurrency(detail_currency_spinner.getSelectedItem().toString());
+        expense.setDescription(detail_description.getText().toString());
+        expense.setDay(day); expense.setMonth(month); expense.setYear(year);
+        expense.setIf_paid(detail_if_paid_view.isChecked());
+        db.updateExpense(expense);
+    }
+
     private void enableAllViews(boolean bool){
         if (bool){
             detail_amount.setEnabled(true);
-            detail_category_spinner.setEnabled(true);
+            detail_currency_spinner.setEnabled(true);
             detail_category_spinner.setEnabled(true);
             detail_description.setEnabled(true);
             detail_changeDate.setClickable(true);
@@ -201,7 +243,7 @@ public class DetailActivity extends AppCompatActivity {
         }
         else{
             detail_amount.setEnabled(false);
-            detail_category_spinner.setEnabled(false);
+            detail_currency_spinner.setEnabled(false);
             detail_category_spinner.setEnabled(false);
             detail_description.setEnabled(false);
             detail_changeDate.setClickable(false);
