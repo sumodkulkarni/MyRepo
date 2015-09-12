@@ -28,14 +28,14 @@
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:ems="10"
-                android:id="@+id/enter_amount"
+                android:id="@+id/detail_amount"
                 android:hint="@string/Enter_Amount"
                 android:layout_weight="0.50" />
 
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/currency_spinner"
+                android:id="@+id/detail_currency_spinner"
                 android:layout_gravity="right"
                 android:layout_weight="0.50"/>
 
@@ -63,7 +63,7 @@
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinner"
+                android:id="@+id/detail_category_spinner"
                 android:layout_gravity="right" />
 
 
@@ -73,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/Description"
-            android:id="@+id/enter_description"
+            android:id="@+id/detail_description"
             android:inputType="textShortMessage"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
@@ -99,7 +99,7 @@
                 />
 
             <TextView
-                android:id="@+id/changeDate"
+                android:id="@+id/detail_changeDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Today"
@@ -121,7 +121,7 @@
             android:layout_marginRight="20dp">
 
             <CheckedTextView
-                android:id="@+id/if_paid_view"
+                android:id="@+id/detail_if_paid_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/Paid"
@@ -135,16 +135,21 @@
 
     </LinearLayout>
 
-    <com.software.shell.fab.ActionButton
-        android:id="@+id/fab_done"
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_fab_complete"
-
-        android:layout_marginRight="@dimen/fab_margin"
+        android:text="@string/Edit"
+        android:id="@+id/button_edit_expense"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignEnd="@+id/linear_layout_principle" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_delete_expense"
+        android:text="@string/Delete"
+        android:layout_alignBottom="@+id/button_edit_expense"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>

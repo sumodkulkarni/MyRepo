@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Currency;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -173,6 +174,21 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public Cursor getAllExpenses(){
+        SQLiteDatabase db = getReadableDatabase();
+
+        String query = "SELECT " + KEY_ID + " as _id, "
+                + KEY_AMOUNT + ", " + KEY_CURRENCY + ", "
+                + KEY_DAY + ", " + KEY_MONTH + ", "
+                + KEY_YEAR + " FROM " + TABLE_EXPENSES;
+
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor != null){
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
 
     public Long addCategory(Category category){
         long k = -2;
@@ -277,6 +293,46 @@ public class DBHandler extends SQLiteOpenHelper {
         String currency = cursor.getString(cursor.getColumnIndex(KEY_USER_CURRENCY));
         cursor.close();
         return currency;
+    }
+
+
+    public ArrayList<HashMap<String, String>> getExpenseList() {
+        //Open connection to read only
+        SQLiteDatabase db = getReadableDatabase();
+        String selectQuery = "SELECT  " +
+                KEY_ID + "," +
+                KEY_AMOUNT + "," +
+                KEY_CURRENCY + "," +
+                KEY_CATEGORY + "," +
+                KEY_DAY + "," +
+                KEY_MONTH + "," +
+                KEY_YEAR +
+                " FROM " + TABLE_EXPENSES;
+
+        ArrayList<HashMap<String, String>> incidentList = new ArrayList<HashMap<String, String>>();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+                HashMap<String, String> expense = new HashMap<String, String>();
+                expense.put("id", cursor.getString(cursor.getColumnIndex(KEY_ID)));//new
+                expense.put("amount", cursor.getString(cursor.getColumnIndex(KEY_AMOUNT)));
+                expense.put("currency", cursor.getString(cursor.getColumnIndex(KEY_CURRENCY)));
+                expense.put("category", cursor.getString(cursor.getColumnIndex(KEY_CATEGORY)));
+                expense.put("date", cursor.getString(cursor.getColumnIndex(KEY_DAY)) + "/" +
+                                    cursor.getString(cursor.getColumnIndex(KEY_MONTH)) + "/" +
+                                    cursor.getString(cursor.getColumnIndex(KEY_YEAR)));
+                incidentList.add(expense);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return incidentList;
+
     }
 
 

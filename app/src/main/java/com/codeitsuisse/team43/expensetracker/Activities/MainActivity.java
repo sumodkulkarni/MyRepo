@@ -13,6 +13,11 @@ import com.melnykov.fab.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
+    public void gotoList(View view){
+        Intent i = new Intent(this, ListActivity.class);
+        startActivity(i);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

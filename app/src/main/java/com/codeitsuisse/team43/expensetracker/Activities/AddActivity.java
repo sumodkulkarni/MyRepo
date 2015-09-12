@@ -35,9 +35,12 @@ import java.util.Set;
 
 public class AddActivity extends AppCompatActivity {
 
-    TextView changeDate, date_label, currency_textView;
+    DBHandler db;
+
+    TextView date_label, currency_textView;
     EditText enter_amount, enter_description;
     Spinner spinner, currency_spinner;
+    TextView changeDate;
     ActionButton fab_done;
     CheckedTextView if_paid_view;
     LinearLayout linear_layout_principle;
@@ -54,7 +57,7 @@ public class AddActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
-        DBHandler db = new DBHandler(this, null, null, 1);
+        db = new DBHandler(this, null, null, 1);
 
         linear_layout_principle = (LinearLayout) findViewById(R.id.linear_layout_principle);
 
@@ -74,6 +77,16 @@ public class AddActivity extends AppCompatActivity {
         fab_done = (ActionButton) findViewById(R.id.fab_done);
         fab_done.setImageResource(R.drawable.ic_fab_complete);
 
+        //Styling
+        if_paid_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (if_paid_view.isChecked())
+                    if_paid_view.setChecked(false);
+                else
+                    if_paid_view.setChecked(true);
+            }
+        });
 
         List<String> categoryList = db.getCategoryList();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, categoryList);
@@ -84,6 +97,7 @@ public class AddActivity extends AppCompatActivity {
             public void onClick(View v) {
                 SaveExpense();
                 Toast.makeText(AddActivity.this, "SAVED", Toast.LENGTH_LONG).show();
+                finish();
             }
         });
 
@@ -137,10 +151,12 @@ public class AddActivity extends AppCompatActivity {
         Expense expense = new Expense();
         expense.setAmount(Double.parseDouble(enter_amount.getText().toString()));
         expense.setCategory(spinner.getSelectedItem().toString());
-        expense.setCurrency(currency_textView.getText().toString());
+        expense.setCurrency(currency_spinner.getSelectedItem().toString());
         expense.setDescription(enter_description.getText().toString());
         expense.setDay(day); expense.setMonth(month); expense.setYear(year);
         expense.setIf_paid(if_paid_view.isChecked());
+
+        db.addExpense(expense);
     }
 
     @Override
@@ -168,8 +184,8 @@ public class AddActivity extends AppCompatActivity {
             day   = selectedDay;
 
             // Show selected date
-            changeDate.setText(new StringBuilder().append(day + 1)
-                    .append("/").append(month).append("/").append(year)
+            changeDate.setText(new StringBuilder().append(day)
+                    .append("/").append(month+1).append("/").append(year)
                     .append(" "));
 
         }

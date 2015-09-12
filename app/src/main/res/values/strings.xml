@@ -23,4 +23,8 @@
     <string name="Date">DATE:</string>
     <string name="Today">Today</string>
     <string name="Paid">Paid</string>
+    <string name="title_activity_list">ListActivity</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="Edit">Edit</string>
+    <string name="Delete">Delete</string>
 </resources>
