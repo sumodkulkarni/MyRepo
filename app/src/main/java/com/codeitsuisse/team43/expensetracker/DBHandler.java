@@ -349,8 +349,8 @@ public class DBHandler extends SQLiteOpenHelper {
         float total_amount = 0;
         for (int i=0; i<cursor.getCount(); i++){
             total_amount = total_amount + Float.valueOf(cursor.getString(cursor.getColumnIndex(KEY_AMOUNT)));
+            cursor.moveToNext();
         }
-
         return total_amount;
     }
 
@@ -364,8 +364,8 @@ public class DBHandler extends SQLiteOpenHelper {
         float total_amount = 0;
         for (int i=0; i<cursor.getCount(); i++){
             total_amount = total_amount + Float.valueOf(cursor.getString(cursor.getColumnIndex(KEY_AMOUNT)));
+            cursor.moveToNext();
         }
-
         return total_amount;
     }
 

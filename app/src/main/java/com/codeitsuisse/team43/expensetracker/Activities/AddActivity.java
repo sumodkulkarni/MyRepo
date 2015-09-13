@@ -21,11 +21,13 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.melnykov.fab.FloatingActionButton;
 
 import com.codeitsuisse.team43.expensetracker.Category;
 import com.codeitsuisse.team43.expensetracker.DBHandler;
 import com.codeitsuisse.team43.expensetracker.Expense;
 import com.codeitsuisse.team43.expensetracker.R;
+import com.melnykov.fab.FloatingActionButton;
 import com.software.shell.fab.ActionButton;
 
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public class AddActivity extends AppCompatActivity {
     EditText enter_amount, enter_description;
     Spinner spinner, currency_spinner;
     TextView changeDate;
-    ActionButton fab_done;
+    FloatingActionButton fab_done;
     CheckedTextView if_paid_view;
     LinearLayout linear_layout_principle;
 
@@ -77,7 +79,7 @@ public class AddActivity extends AppCompatActivity {
         changeDate = (TextView) findViewById(R.id.changeDate);
         spinner = (Spinner) findViewById(R.id.spinner);
         if_paid_view = (CheckedTextView) findViewById(R.id.if_paid_view);
-        fab_done = (ActionButton) findViewById(R.id.fab_done);
+        fab_done = (FloatingActionButton) findViewById(R.id.fab_done);
         fab_done.setImageResource(R.drawable.ic_fab_complete);
 
         //Styling
@@ -122,8 +124,7 @@ public class AddActivity extends AppCompatActivity {
 
         });
 
-        fab_done.playShowAnimation();
-
+        if_paid_view.requestFocus();
     }
 
     @Override

@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     DBHandler db;
     private PieChart mChart;
+    FloatingActionButton fab;
 
     public void gotoList(View view){
         Intent i = new Intent(this, ListActivity.class);
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         db = new DBHandler(this, null, null, 1);
 
         ListView listView = (ListView) findViewById(android.R.id.list);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,12 +137,14 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<Integer> colors = new ArrayList<Integer>();
 
+        /*
         for (int c : ColorTemplate.VORDIPLOM_COLORS)
             colors.add(c);
-
+*/
+        /*
         for (int c : ColorTemplate.JOYFUL_COLORS)
             colors.add(c);
-
+*/
         for (int c : ColorTemplate.COLORFUL_COLORS)
             colors.add(c);
 
@@ -196,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
 
+        mChart.setCenterText("Budget\nvs.\nLiabilities");
+        mChart.setCenterTextColor(R.color.abc_primary_text_disable_only_material_dark);
         mChart.setNoDataText("Enter some Expenses and a Budget to get started!");
     }
 
