@@ -1,9 +1,11 @@
 package com.codeitsuisse.team43.expensetracker.Activities;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,6 +64,7 @@ public class AddActivity extends AppCompatActivity {
         linear_layout_principle = (LinearLayout) findViewById(R.id.linear_layout_principle);
 
         enter_amount = (EditText) findViewById(R.id.enter_amount);
+        enter_amount.setText(" ");
         currency_spinner = (Spinner) findViewById(R.id.currency_spinner);
         List<String> currencyList = new ArrayList<>();
         currencyList.add("INR"); currencyList.add("USD");
@@ -96,8 +99,6 @@ public class AddActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SaveExpense();
-                Toast.makeText(AddActivity.this, "SAVED", Toast.LENGTH_LONG).show();
-                finish();
             }
         });
 
@@ -149,14 +150,21 @@ public class AddActivity extends AppCompatActivity {
 
     public void SaveExpense(){
         Expense expense = new Expense();
-        expense.setAmount(Double.parseDouble(enter_amount.getText().toString()));
-        expense.setCategory(spinner.getSelectedItem().toString());
-        expense.setCurrency(currency_spinner.getSelectedItem().toString());
-        expense.setDescription(enter_description.getText().toString());
-        expense.setDay(day); expense.setMonth(month); expense.setYear(year);
-        expense.setIf_paid(if_paid_view.isChecked());
 
-        db.addExpense(expense);
+        if (enter_amount.getText().toString().equals(" ")){
+           ShowAlert("Invalid Input", "Please enter a valid amount", this);
+        }else{
+            expense.setAmount(Double.parseDouble(enter_amount.getText().toString()));
+            expense.setCategory(spinner.getSelectedItem().toString());
+            expense.setCurrency(currency_spinner.getSelectedItem().toString());
+            expense.setDescription(enter_description.getText().toString());
+            expense.setDay(day); expense.setMonth(month); expense.setYear(year);
+            expense.setIf_paid(if_paid_view.isChecked());
+
+            db.addExpense(expense);
+            Toast.makeText(this, "SAVED", Toast.LENGTH_LONG).show();
+            finish();
+        }
     }
 
     @Override

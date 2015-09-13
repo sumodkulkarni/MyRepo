@@ -3,6 +3,7 @@ package com.codeitsuisse.team43.expensetracker.Activities;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
@@ -219,29 +220,35 @@ public class DetailActivity extends AppCompatActivity {
         detail_if_paid_view.setChecked(expense.isIf_paid());
     }
 
-    private void updateExpense(){
-        Expense expense = new Expense();
-        Intent i = getIntent();
-        expense.set_id(i.getIntExtra("expense_id",50000));
-        expense.setAmount(Double.parseDouble(detail_amount.getText().toString()));
-        expense.setCategory(detail_category_spinner.getSelectedItem().toString());
-        expense.setCurrency(detail_currency_spinner.getSelectedItem().toString());
-        expense.setDescription(detail_description.getText().toString());
-        expense.setDay(day); expense.setMonth(month); expense.setYear(year);
-        expense.setIf_paid(detail_if_paid_view.isChecked());
-        db.updateExpense(expense);
+    private void updateExpense() {
+
+        if (detail_amount.getText().toString().equals(" ")) {
+            ShowAlert("Invalid Input", "Please enter a valid amount", this);
+        } else {
+            Expense expense = new Expense();
+            Intent i = getIntent();
+            expense.set_id(i.getIntExtra("expense_id", 50000));
+            expense.setAmount(Double.parseDouble(detail_amount.getText().toString()));
+            expense.setCategory(detail_category_spinner.getSelectedItem().toString());
+            expense.setCurrency(detail_currency_spinner.getSelectedItem().toString());
+            expense.setDescription(detail_description.getText().toString());
+            expense.setDay(day);
+            expense.setMonth(month);
+            expense.setYear(year);
+            expense.setIf_paid(detail_if_paid_view.isChecked());
+            db.updateExpense(expense);
+        }
     }
 
-    private void enableAllViews(boolean bool){
-        if (bool){
+    private void enableAllViews(boolean bool) {
+        if (bool) {
             detail_amount.setEnabled(true);
             detail_currency_spinner.setEnabled(true);
             detail_category_spinner.setEnabled(true);
             detail_description.setEnabled(true);
             detail_changeDate.setClickable(true);
             detail_if_paid_view.setClickable(true);
-        }
-        else{
+        } else {
             detail_amount.setEnabled(false);
             detail_currency_spinner.setEnabled(false);
             detail_category_spinner.setEnabled(false);
@@ -250,4 +257,18 @@ public class DetailActivity extends AppCompatActivity {
             detail_if_paid_view.setClickable(false);
         }
     }
+
+    public void ShowAlert(String title, String message, Context context) {
+        android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(context).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // here you can add functions
+            }
+        });
+        alertDialog.setIcon(R.drawable.abc_dialog_material_background_dark);
+        alertDialog.show();
+    }
+
 }

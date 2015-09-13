@@ -50,7 +50,10 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String TABLE_USER_PREFERENCES = "USER_PREFERENCES";
 
     //Column names:
-    public static final String KEY_USER_CURRENCY = "USER_CURRENCY";
+    public static final String KEY_USER_CURRENCY = "BUDGET";
+
+    //Table names:
+
 
     public DBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -334,6 +337,36 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
         return incidentList;
 
+    }
+
+    public float getTotalExpensesPaid() {
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT AMOUNT FROM " + TABLE_EXPENSES + " WHERE " + KEY_IF_PAID + " =?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{"1"});
+        cursor.moveToFirst();
+
+        float total_amount = 0;
+        for (int i=0; i<cursor.getCount(); i++){
+            total_amount = total_amount + Float.valueOf(cursor.getString(cursor.getColumnIndex(KEY_AMOUNT)));
+        }
+
+        return total_amount;
+    }
+
+    public float getTotalLiabilities(){
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT AMOUNT FROM " + TABLE_EXPENSES + " WHERE " + KEY_IF_PAID + " =?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{"0"});
+        cursor.moveToFirst();
+
+        float total_amount = 0;
+        for (int i=0; i<cursor.getCount(); i++){
+            total_amount = total_amount + Float.valueOf(cursor.getString(cursor.getColumnIndex(KEY_AMOUNT)));
+        }
+
+        return total_amount;
     }
 
 

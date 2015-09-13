@@ -1,6 +1,7 @@
 package com.codeitsuisse.team43.expensetracker.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -25,6 +28,27 @@ public class ListActivity extends AppCompatActivity {
 
     DBHandler db;
     ListView expense_listView;
+    TextView budget_label;
+    EditText enter_budget;
+    Button button_edit_budget;
+
+    public void editBudget(View view){
+        String text = button_edit_budget.getText().toString();
+
+        switch (text){
+            case "EDIT":
+                enter_budget.setEnabled(true);;
+                button_edit_budget.setText("SAVE");
+                break;
+
+            case "SAVE":
+                enter_budget.setEnabled(false);
+                SavePreferences("BUDGET", enter_budget.getText().toString());
+                button_edit_budget.setText("EDIT");
+                enter_budget.setText(LoadPreferences("BUDGET"));
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +57,12 @@ public class ListActivity extends AppCompatActivity {
         db = new DBHandler(this, null, null, 1);
 
         expense_listView = (ListView) findViewById(R.id.expense_listView);
+        budget_label = (TextView) findViewById(R.id.budget_label);
+        enter_budget = (EditText) findViewById(R.id.enter_budget);
+        button_edit_budget = (Button) findViewById(R.id.button_edit_budget);
+        enter_budget.setEnabled(false);
+
+        enter_budget.setText(LoadPreferences("BUDGET"));
 
         populateListView();
     }
@@ -78,11 +108,24 @@ public class ListActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         TextView item_id = (TextView) view.findViewById(R.id.item_id);
                         String expenseId = item_id.getText().toString();
-                        Intent objIntent = new Intent(getApplicationContext(),DetailActivity.class);
+                        Intent objIntent = new Intent(getApplicationContext(), DetailActivity.class);
                         objIntent.putExtra("expense_id", Integer.parseInt(expenseId));
                         startActivity(objIntent);
                     }
                 }
         );
+    }
+
+    private void SavePreferences(String key, String value) {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    private String LoadPreferences(String key) {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        String budget = sharedPreferences.getString(key, "0");
+        return budget;
     }
 }
