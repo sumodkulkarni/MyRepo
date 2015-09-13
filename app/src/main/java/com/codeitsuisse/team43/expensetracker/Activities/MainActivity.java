@@ -3,22 +3,33 @@ package com.codeitsuisse.team43.expensetracker.Activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.ScrollView;
 
 import com.codeitsuisse.team43.expensetracker.DBHandler;
 import com.codeitsuisse.team43.expensetracker.R;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.PercentFormatter;
+import com.github.mikephil.charting.utils.ValueFormatter;
 import com.melnykov.fab.FloatingActionButton;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -33,15 +44,23 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.PercentFormatter;
+import com.melnykov.fab.ObservableScrollView;
 //import com.codeitsuisse.team43.expensetracker.notimportant.DemoBase;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     DBHandler db;
     private PieChart mChart;
+    private BarChart chart1;
+    private static final String TAG = "MainActivity";
     FloatingActionButton fab;
+    ObservableScrollView myScrollView;
 
     public void gotoList(View view){
         Intent i = new Intent(this, ListActivity.class);
@@ -55,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
 
         db = new DBHandler(this, null, null, 1);
 
+
+
         ListView listView = (ListView) findViewById(android.R.id.list);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -66,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //myScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
+
+        //fab.attachToScrollView(myScrollView);
+
         populatePieChart();
 
 
@@ -75,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         populatePieChart();
+
     }
 
     @Override
@@ -199,9 +225,21 @@ public class MainActivity extends AppCompatActivity {
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
 
-        mChart.setCenterText("Budget\nvs.\nLiabilities");
+        mChart.setCenterText("Expenses\nvs.\nLiabilities");
         mChart.setCenterTextColor(R.color.abc_primary_text_disable_only_material_dark);
         mChart.setNoDataText("Enter some Expenses and a Budget to get started!");
     }
 
+    private void SavePreferences(String key, String value) {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    private String LoadPreferences(String key) {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        String budget = sharedPreferences.getString(key, "0");
+        return budget;
+    }
 }
